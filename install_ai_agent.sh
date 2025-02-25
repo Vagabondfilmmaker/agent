@@ -1,46 +1,30 @@
-#!/bin/bash
+@echo off
+echo 🚀 Starting AI Research Agent Installation...
 
-echo "🚀 Starting AI Research Agent Installation..."
+echo 🔄 Updating WSL & System Packages...
+wsl --update
+wsl sudo apt update && sudo apt upgrade -y
 
-# Updating and upgrading system packages
-echo "🔄 Updating and upgrading system packages..."
-sudo apt update && sudo apt upgrade -y
+echo 🛠 Installing Required Dependencies...
+wsl sudo apt install -y python3 python3-pip python3-venv git curl wget unzip
 
-# Install required system dependencies
-echo "📦 Installing required system dependencies..."
-sudo apt install -y unzip git python3 python3-pip python3-venv dos2unix
+echo 📁 Creating AI Research Agent Directory...
+wsl mkdir -p ~/ai-research-agent && cd ~/ai-research-agent
 
-# Ensure script compatibility (remove Windows carriage returns if any)
-echo "🛠 Converting script to Unix format..."
-dos2unix install_ai_agent.sh
+echo 📦 Setting Up Python Virtual Environment...
+wsl python3 -m venv env
+wsl source env/bin/activate
 
-# Creating AI Research Agent Directory
-echo "📂 Setting up AI Research Agent directory..."
-cd ~
-if [ ! -d "ai-research-agent" ]; then
-    git clone git@github.com:Vagabondfilmmaker/agent.git ai-research-agent
-fi
-cd ~/ai-research-agent
+echo 📥 Installing Required Python Libraries...
+wsl pip install --upgrade pip
+wsl pip install numpy scipy sympy pandas matplotlib torch tensorflow transformers beautifulsoup4 selenium requests scikit-learn
 
-# Setting up Python Virtual Environment
-echo "🐍 Setting up Python Virtual Environment..."
-python3 -m venv venv
-source venv/bin/activate
+echo 🖥️ Cloning AI Agent Repository...
+wsl git clone https://github.com/Vagabondfilmmaker/ai-research-assistant.git || echo Skipping repository clone...
+wsl cd ai-research-assistant
 
-# Installing required Python libraries
-echo "📦 Installing required Python libraries..."
-pip install --upgrade pip
-pip install torch torchvision torchaudio tensorflow numpy pandas scikit-learn matplotlib transformers requests beautifulsoup4 selenium
+echo 🚀 Running AI Research Agent...
+wsl python ai_research_assistant.py
 
-# Cloning AI Agent Repository
-echo "🔄 Cloning AI Agent Repository..."
-if [ ! -d "agent" ]; then
-    git clone git@github.com:Vagabondfilmmaker/agent.git
-fi
-cd ~/ai-research-agent/agent
-
-# Running AI Research Agent
-echo "🤖 Running AI Research Agent..."
-python ai_research_assistant.py
-
-echo "✅ AI Research Agent Installation Complete!"
+echo ✅ AI Research Agent Installation Complete!
+pause
