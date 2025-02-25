@@ -1,30 +1,38 @@
-@echo off
-echo 🚀 Starting AI Research Agent Installation...
+#!/bin/bash
 
-echo 🔄 Updating WSL & System Packages...
-wsl --update
-wsl sudo apt update && sudo apt upgrade -y
+# Define installation directory
+AGENT_DIR="$HOME/ai-research-agent"
+VENV_DIR="$AGENT_DIR/venv"
+REPO_URL="git@github.com:Vagabondfilmmaker/agent.git"
+AGENT_SCRIPT="ai_research_agent.py"
 
-echo 🛠 Installing Required Dependencies...
-wsl sudo apt install -y python3 python3-pip python3-venv git curl wget unzip
+# Update system packages
+echo "Updating system packages..."
+sudo apt update && sudo apt upgrade -y
+sudo apt install -y python3 python3-venv python3-pip git dos2unix
 
-echo 📁 Creating AI Research Agent Directory...
-wsl mkdir -p ~/ai-research-agent && cd ~/ai-research-agent
+echo "Setting up AI Research Agent directory..."
+mkdir -p "$AGENT_DIR"
+cd "$AGENT_DIR"
 
-echo 📦 Setting Up Python Virtual Environment...
-wsl python3 -m venv env
-wsl source env/bin/activate
+echo "Cloning or updating repository..."
+if [ -d "$AGENT_DIR/.git" ]; then
+    git pull origin main
+else
+    git clone "$REPO_URL" "$AGENT_DIR"
+fi
 
-echo 📥 Installing Required Python Libraries...
-wsl pip install --upgrade pip
-wsl pip install numpy scipy sympy pandas matplotlib torch tensorflow transformers beautifulsoup4 selenium requests scikit-learn
+echo "Creating and activating Python virtual environment..."
+python3 -m venv "$VENV_DIR"
+source "$VENV_DIR/bin/activate"
 
-echo 🖥️ Cloning AI Agent Repository...
-wsl git clone https://github.com/Vagabondfilmmaker/ai-research-assistant.git || echo Skipping repository clone...
-wsl cd ai-research-assistant
+echo "Installing required Python libraries..."
+pip install --upgrade pip
+pip install torch torchvision torchaudio tensorflow numpy pandas requests
 
-echo 🚀 Running AI Research Agent...
-wsl python ai_research_assistant.py
+echo "Ensuring script compatibility..."
+dos2unix "$AGENT_DIR/$AGENT_SCRIPT"
+chmod +x "$AGENT_DIR/$AGENT_SCRIPT"
 
-echo ✅ AI Research Agent Installation Complete!
-pause
+echo "Installation complete. Running AI Research Agent..."
+python "$AGENT_DIR/$AGENT_SCRIPT"
