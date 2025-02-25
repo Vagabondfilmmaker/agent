@@ -6,58 +6,41 @@ echo "🚀 Starting AI Research Agent Installation..."
 echo "🔄 Updating and upgrading system packages..."
 sudo apt update && sudo apt upgrade -y
 
-# Installing required system dependencies
+# Install required system dependencies
 echo "📦 Installing required system dependencies..."
 sudo apt install -y unzip git python3 python3-pip python3-venv dos2unix
 
-# Cloning AI Agent Repository
-echo "🔗 Cloning AI Agent Repository..."
-if [ ! -d "agent" ]; then
-    git clone git@github.com:Vagabondfilmmaker/agent.git
-else
-    echo "✅ Repository already exists. Skipping clone."
+# Ensure script compatibility (remove Windows carriage returns if any)
+echo "🛠 Converting script to Unix format..."
+dos2unix install_ai_agent.sh
+
+# Creating AI Research Agent Directory
+echo "📂 Setting up AI Research Agent directory..."
+cd ~
+if [ ! -d "ai-research-agent" ]; then
+    git clone git@github.com:Vagabondfilmmaker/agent.git ai-research-agent
 fi
-
-# Navigating into the project directory
-cd agent || exit
-
-# Converting line endings to Unix format
-echo "🔄 Fixing potential line ending issues..."
-find . -type f -exec dos2unix {} \;
+cd ~/ai-research-agent
 
 # Setting up Python Virtual Environment
 echo "🐍 Setting up Python Virtual Environment..."
-if [ ! -d "venv" ]; then
-    python3 -m venv venv
-    source venv/bin/activate
-else
-    echo "✅ Virtual environment already exists. Activating it."
-    source venv/bin/activate
-fi
+python3 -m venv venv
+source venv/bin/activate
 
 # Installing required Python libraries
-echo "📥 Installing required Python libraries..."
+echo "📦 Installing required Python libraries..."
 pip install --upgrade pip
-pip install torch tensorflow numpy pandas matplotlib transformers beautifulsoup4 selenium scikit-learn requests
+pip install torch torchvision torchaudio tensorflow numpy pandas scikit-learn matplotlib transformers requests beautifulsoup4 selenium
 
-# Creating AI Research Assistant script if it doesn't exist
-if [ ! -f "ai_research_assistant.py" ]; then
-    echo "📝 Creating AI Research Assistant script..."
-    cat <<EOL > ai_research_assistant.py
-import torch
-
-def main():
-    print("AI Research Assistant is running...")
-    print(f"PyTorch Device: {'cuda' if torch.cuda.is_available() else 'cpu'}")
-
-if __name__ == "__main__":
-    main()
-EOL
-    echo "✅ AI Research Assistant script created."
+# Cloning AI Agent Repository
+echo "🔄 Cloning AI Agent Repository..."
+if [ ! -d "agent" ]; then
+    git clone git@github.com:Vagabondfilmmaker/agent.git
 fi
+cd ~/ai-research-agent/agent
 
 # Running AI Research Agent
-echo "🏃 Running AI Research Agent..."
-python3 ai_research_assistant.py
+echo "🤖 Running AI Research Agent..."
+python ai_research_assistant.py
 
 echo "✅ AI Research Agent Installation Complete!"
